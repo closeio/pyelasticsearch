@@ -565,7 +565,7 @@ class ElasticSearch(object):
             body,
             query_params=query_params)
 
-    @es_kwargs('routing', 'size')
+    @es_kwargs('routing', 'size', 'preference')
     def search(self, query, **kwargs):
         """
         Execute a search query against one or more indices and get back search
