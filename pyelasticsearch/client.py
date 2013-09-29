@@ -262,7 +262,8 @@ class ElasticSearch(object):
         error_class = ElasticHttpError
         if response.status_code == 404:
             error_class = ElasticHttpNotFoundError
-        elif error_message.startswith('IndexAlreadyExistsException'):
+        elif (error_message.startswith('IndexAlreadyExistsException') or
+              'nested: IndexAlreadyExistsException' in error_message):
             error_class = IndexAlreadyExistsError
 
         raise error_class(response.status_code, error_message)
@@ -1015,13 +1016,6 @@ class ElasticSearch(object):
         return self.send_request('GET',
                                  [index, doc_type, '_percolate'], 
                                  doc, query_params=query_params)
-
-    @es_kwargs()
-    def info(self, query_params=None):
-        """
-        Get Elasticsearch information.
-        """
-        return self.send_request('GET', [])
 
 
 class JsonEncoder(json.JSONEncoder):

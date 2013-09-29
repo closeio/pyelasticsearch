@@ -187,7 +187,7 @@ class IndexingTestCase(ElasticSearchTestCase):
         self.conn.put_mapping('test-index', 'test-type', mapping)
 
         result = self.conn.get_mapping(index=['test-index'], doc_type=['test-type'])
-        eq_(result, mapping)
+        eq_(result, {'test-type': {'properties': {'name': {'type': 'string', 'store': True}}}})
 
     def test_index_status(self):
         self.conn.create_index('another-index')
@@ -326,12 +326,10 @@ class IndexingTestCase(ElasticSearchTestCase):
 
         # Percolate a document that shouldn't match any queries
         document = { 'doc': {'name': 'blah'} }
-        result = self.conn.percolate('test-index','test-type', document)
+        result = self.conn.percolate('test-index', 'test-type', document)
         self.assert_result_contains(result, {'matches': [], 'ok': True})
 
-    def test_info(self):
-        result = self.conn.info()
-        ok_('version' in result)
+        self.conn.delete_index('_percolator')
 
 
 class SearchTestCase(ElasticSearchTestCase):
