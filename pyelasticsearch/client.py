@@ -434,7 +434,7 @@ class ElasticSearch(object):
         return self.send_request('DELETE', [index, doc_type],
                                  query_params=query_params)
 
-    @es_kwargs('q', 'df', 'analyzer', 'default_operator', 'source' 'routing',
+    @es_kwargs('q', 'df', 'analyzer', 'default_operator', 'source', 'routing',
                'replication', 'consistency')
     def delete_by_query(self, index, doc_type, query, query_params=None):
         """
