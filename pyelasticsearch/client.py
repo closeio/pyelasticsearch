@@ -670,7 +670,7 @@ class ElasticSearch(object):
             [self._concat(index), self._concat(doc_type), '_mapping'],
             query_params=query_params)
 
-    @es_kwargs('ignore_conflicts')
+    @es_kwargs('ignore_conflicts', 'master_timeout')
     def put_mapping(self, index, doc_type, mapping, query_params=None):
         """
         Register specific mapping definition for a specific type against one or
