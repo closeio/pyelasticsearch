@@ -1023,6 +1023,17 @@ class ElasticSearch(object):
                                  [index, doc_type, '_percolate'], 
                                  doc, query_params=query_params)
 
+    def close_context(self, scroll_id):
+        """
+        Closes scroll context by its ID by issuing DELETE query.
+
+        :arg scroll_id: The ID of the scroll.
+
+        .. _`ES's scroll API`:
+            https://www.elastic.co/guide/en/elasticsearch/reference/1.4/search-request-scroll.html
+        """
+        return self.send_request('DELETE', ['_search', 'scroll'], scroll_id, encode_body=False)
+
 
 class JsonEncoder(json.JSONEncoder):
     def default(self, value):

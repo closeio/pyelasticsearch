@@ -419,6 +419,20 @@ class SearchTestCase(ElasticSearchTestCase):
 
         eq_((numhits, numrequests), (99, 11))
 
+    def open_contexts(self):
+        scroll_stat = self.conn.send_request('GET', ['_nodes', 'stats', 'indices', 'search'])
+        return scroll_stat['nodes'].itervalues().next()['indices']['search']['open_contexts']
+
+    def test_context_closing(self):
+        open_contexts = self.open_contexts()
+        result = self.conn.search(index=["test-index"],
+                                  query=dict(query=dict(match_all={}), fields="*"),
+                                  search_type="scan",
+                                  scroll="5m",
+                                  size=2)
+        self.conn.close_context(result['_scroll_id'])
+        self.assertEqual(open_contexts, self.open_contexts())
+
     def test_mlt(self):
         self.conn.index('test-index', 'test-type', {'name': 'Joe Test'}, id=3)
         self.conn.refresh(['test-index'])
